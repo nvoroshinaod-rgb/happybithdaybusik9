@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Квест для Надюши 🎉</title>
+    <style>
+        /* ---------- RESET & GLOBAL ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(145deg, #fce4ec, #f8bbd0);
+            font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, sans-serif;
+            padding: 16px;
+            touch-action: manipulation;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ---------- ФОНОВЫЕ ЛЕТАЮЩИЕ СМАЙЛИКИ ---------- */
+        .floating-icons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .float-icon {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.25;
+            user-select: none;
+            animation: floatAround 20s infinite alternate ease-in-out;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.05));
+        }
+
+        .float-icon:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            font-size: 3rem;
+            animation-duration: 25s;
+            animation-delay: 0s;
+        }
+        .float-icon:nth-child(2) {
+            top: 80%;
+            left: 15%;
+            font-size: 2rem;
+            animation-duration: 22s;
+            animation-delay: 2s;
+        }
+        .float-icon:nth-child(3) {
+            top: 20%;
+            left: 85%;
+            font-size: 3.5rem;
+            animation-duration: 28s;
+            animation-delay: 4s;
+        }
+        .float-icon:nth-child(4) {
+            top: 70%;
+            left: 75%;
+            font-size: 2.8rem;
+            animation-duration: 20s;
+            animation-delay: 1s;
+        }
+        .float-icon:nth-child(5) {
+            top: 40%;
+            left: 10%;
+            font-size: 2.2rem;
+            animation-duration: 26s;
+            animation-delay: 3s;
+        }
+        .float-icon:nth-child(6) {
+            top: 60%;
+            left: 90%;
+            font-size: 3rem;
+            animation-duration: 24s;
+            animation-delay: 5s;
+        }
+        .float-icon:nth-child(7) {
+            top: 15%;
+            left: 45%;
+            font-size: 2rem;
+            animation-duration: 30s;
+            animation-delay: 1s;
+        }
+        .float-icon:nth-child(8) {
+            top: 85%;
+            left: 50%;
+            font-size: 3.2rem;
+            animation-duration: 21s;
+            animation-delay: 3s;
+        }
+        .float-icon:nth-child(9) {
+            top: 50%;
+            left: 70%;
+            font-size: 2.6rem;
+            animation-duration: 27s;
+            animation-delay: 0s;
+        }
+        .float-icon:nth-child(10) {
+            top: 30%;
+            left: 25%;
+            font-size: 3rem;
+            animation-duration: 23s;
+            animation-delay: 2s;
+        }
+        .float-icon:nth-child(11) {
+            top: 75%;
+            left: 30%;
+            font-size: 2.4rem;
+            animation-duration: 29s;
+            animation-delay: 4s;
+        }
+        .float-icon:nth-child(12) {
+            top: 5%;
+            left: 60%;
+            font-size: 3.5rem;
+            animation-duration: 26s;
+            animation-delay: 1s;
+        }
+
+        @keyframes floatAround {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+            25% {
+                transform: translate(40px, -60px) rotate(10deg) scale(1.1);
+            }
+            50% {
+                transform: translate(-30px, 50px) rotate(-5deg) scale(0.9);
+            }
+            75% {
+                transform: translate(50px, 30px) rotate(15deg) scale(1.05);
+            }
+            100% {
+                transform: translate(-20px, -40px) rotate(-8deg) scale(0.95);
+            }
+        }
+
+        /* ---------- ОСНОВНАЯ КАРТОЧКА ---------- */
+        .bubble-card {
+            width: 85%;
+            max-width: 900px;
+            min-height: 50vh;
+            background: rgba(255, 255, 255, 0.80);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 40px;
+            box-shadow:
+                0 20px 60px rgba(233, 30, 99, 0.20),
+                0 8px 24px rgba(233, 30, 99, 0.10),
+                inset 0 2px 4px rgba(255, 255, 255, 0.6);
+            padding: 50px 40px 55px;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            overflow: visible;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .bubble-card::after {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 48px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.80);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 0 0 0 40px;
+            box-shadow: -4px 8px 16px rgba(233, 30, 99, 0.08);
+            border-left: 2px solid rgba(255, 255, 255, 0.5);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* ---------- ДЕКОРАТИВНЫЕ ПУЗЫРЬКИ ---------- */
+        .bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: 40px;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7), rgba(244, 143, 177, 0.20));
+            box-shadow: inset 0 -4px 8px rgba(233, 30, 99, 0.08);
+            animation: float 8s infinite alternate ease-in-out;
+        }
+
+        .bubble:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: -10px;
+            right: -10px;
+            animation-duration: 10s;
+        }
+        .bubble:nth-child(2) {
+            width: 50px;
+            height: 50px;
+            bottom: 30px;
+            left: -15px;
+            animation-duration: 7s;
+            animation-delay: 1s;
+        }
+        .bubble:nth-child(3) {
+            width: 30px;
+            height: 30px;
+            top: 40%;
+            right: -8px;
+            animation-duration: 6s;
+            animation-delay: 2s;
+        }
+        .bubble:nth-child(4) {
+            width: 20px;
+            height: 20px;
+            bottom: 60%;
+            left: 10%;
+            animation-duration: 9s;
+            animation-delay: 0.5s;
+        }
+        .bubble:nth-child(5) {
+            width: 60px;
+            height: 60px;
+            top: 10%;
+            left: -20px;
+            animation-duration: 11s;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(12px, -16px) scale(1.04);
+            }
+        }
+
+        /* ---------- ВЫДЕЛЕНИЕ ВАЖНЫХ СЛОВ ---------- */
+        .highlight {
+            color: #d81b60;
+            font-weight: 700;
+            text-shadow: 0 1px 4px rgba(233, 30, 99, 0.15);
+        }
+
+        /* ---------- ТЕКСТ (центрирован) ---------- */
+        .greeting {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 16px;
+            text-align: center;
+            width: 100%;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .greeting p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #4a1a2c;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+        }
+
+        .greeting.hidden {
+            display: none;
+        }
+
+        /* ---------- ОСНОВНАЯ ЗОНА КВЕСТА ---------- */
+        .quest-area {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        /* ---------- КНОПКА "Чмока выдана" ---------- */
+        .btn-ready {
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            padding: 16px 56px;
+            border: none;
+            border-radius: 40px;
+            background: linear-gradient(145deg, #f06292, #ec407a);
+            color: #fff;
+            cursor: pointer;
+            box-shadow:
+                0 12px 32px rgba(233, 30, 99, 0.35),
+                0 4px 12px rgba(233, 30, 99, 0.20);
+            transition: all 0.25s ease;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            touch-action: manipulation;
+            margin: 6px 0 10px;
+        }
+
+        .btn-ready:hover {
+            transform: scale(1.05);
+            box-shadow: 0 16px 40px rgba(233, 30, 99, 0.40);
+            background: linear-gradient(145deg, #f06292, #d81b60);
+        }
+
+        .btn-ready:active {
+            transform: scale(0.96);
+        }
+
+        .btn-ready.hidden {
+            display: none;
+        }
+
+        /* ---------- ВОПРОС ---------- */
+        .question-text {
+            font-size: 1.35rem;
+            line-height: 1.7;
+            color: #4a1a2c;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .question-text.show {
+            display: block;
+            animation: fadeSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ---------- ВАРИАНТЫ ОТВЕТОВ ---------- */
+        .options-grid {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 10px;
+        }
+
+        .options-grid.show {
+            display: grid;
+            animation: fadeSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .option-btn {
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 16px 12px;
+            border: 2px solid rgba(233, 30, 99, 0.20);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #4a1a2c;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.06);
+            touch-action: manipulation;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            border-color: #ec407a;
+            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.15);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .option-btn:active {
+            transform: scale(0.96);
+        }
+
+        .option-btn.correct {
+            border-color: #2e7d32;
+            background: rgba(46, 125, 50, 0.15);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.20);
+        }
+
+        .option-btn.wrong {
+            border-color: #c62828;
+            background: rgba(198, 40, 40, 0.12);
+            box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.15);
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+            transform: none !important;
+        }
+
+        /* ---------- ФИДБЕК (подсказка / результат) ---------- */
+        .feedback {
+            position: relative;
+            z-index: 2;
+            margin-top: 16px;
+            padding: 20px 28px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 32px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 28px rgba(233, 30, 99, 0.10);
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #3e1a2c;
+            font-weight: 500;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            transform: scale(0.92) translateY(12px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+
+        .feedback.show {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .feedback .highlight {
+            color: #d81b60;
+            font-weight: 700;
+        }
+
+        /* ---------- АНИМАЦИИ ---------- */
+        @keyframes fadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---------- АДАПТИВ ---------- */
+        @media (max-width: 600px) {
+            .bubble-card {
+                width: 92%;
+                padding: 32px 20px 40px;
+                min-height: 40vh;
+                border-radius: 30px;
+            }
+            .bubble-card::after {
+                left: 28px;
+                width: 30px;
+                height: 30px;
+                bottom: -14px;
+                border-radius: 0 0 0 30px;
+            }
+            .bubbles {
+                border-radius: 30px;
+            }
+
+            .greeting p {
+                font-size: 1.1rem;
+            }
+
+            .btn-ready {
+                font-size: 1.6rem;
+                padding: 12px 36px;
+                border-radius: 30px;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .option-btn {
+                font-size: 1rem;
+                padding: 14px 10px;
+                border-radius: 22px;
+            }
+
+            .feedback {
+                font-size: 1rem;
+                padding: 16px 18px;
+                border-radius: 24px;
+            }
+
+            .float-icon {
+                font-size: 2rem !important;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .bubble-card {
+                width: 95%;
+                padding: 24px 16px 32px;
+                min-height: 30vh;
+                border-radius: 24px;
+            }
+            .bubble-card::after {
+                border-radius: 0 0 0 24px;
+            }
+            .bubbles {
+                border-radius: 24px;
+            }
+
+            .greeting p {
+                font-size: 0.95rem;
+            }
+
+            .btn-ready {
+                font-size: 1.3rem;
+                padding: 10px 24px;
+                border-radius: 24px;
+            }
+
+            .question-text {
+                font-size: 0.95rem;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .option-btn {
+                font-size: 0.9rem;
+                padding: 12px 8px;
+                border-radius: 18px;
+            }
+
+            .feedback {
+                font-size: 0.9rem;
+                padding: 14px 12px;
+                border-radius: 20px;
+            }
+
+            .float-icon {
+                font-size: 1.6rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        @media (hover: none) {
+            .btn-ready:hover {
+                transform: none;
+                box-shadow: 0 12px 32px rgba(233, 30, 99, 0.35);
+                background: linear-gradient(145deg, #f06292, #ec407a);
+            }
+            .option-btn:hover {
+                transform: none;
+                border-color: rgba(233, 30, 99, 0.20);
+                box-shadow: 0 4px 12px rgba(233, 30, 99, 0.06);
+                background: rgba(255, 255, 255, 0.6);
+            }
+        }
+    </style>
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- ФОНОВЫЕ ЛЕТАЮЩИЕ СМАЙЛИКИ -->
+    <div class="floating-icons" aria-hidden="true">
+        <span class="float-icon">❤️</span>
+        <span class="float-icon">🎁</span>
+        <span class="float-icon">😘</span>
+        <span class="float-icon">💋</span>
+        <span class="float-icon">🎉</span>
+        <span class="float-icon">❤️</span>
+        <span class="float-icon">🎀</span>
+        <span class="float-icon">💝</span>
+        <span class="float-icon">😍</span>
+        <span class="float-icon">🎈</span>
+        <span class="float-icon">💖</span>
+        <span class="float-icon">✨</span>
+    </div>
+
+    <div class="bubble-card">
+        <!-- декоративные пузырьки -->
+        <div class="bubbles">
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+            <span class="bubble"></span>
+        </div>
+
+        <!-- ТЕКСТ НАВЕРХУ (смайлики убраны) -->
+        <div class="greeting" id="greeting">
+            <p>
+                Котятки очень старались, а Котя им подсказывала, даже зайчика Войковского запрягла 🐰.<br />
+                Думаем, что Коте полагается чмока 💋. Как только сделаешь, жми на кнопку 👇 и отвечай на следующий вопрос!
+            </p>
+        </div>
+
+        <!-- ЗОНА КВЕСТА -->
+        <div class="quest-area">
+
+            <!-- КНОПКА "Чмока выдана" -->
+            <button class="btn-ready" id="btnReady">Чмока выдана</button>
+
+            <!-- ВОПРОС -->
+            <div class="question-text" id="questionText">
+                Что Надюше нельзя делать с бокалами?
+            </div>
+
+            <!-- ВАРИАНТЫ ОТВЕТОВ -->
+            <div class="options-grid" id="optionsGrid">
+                <button class="option-btn" data-index="0">Мыть</button>
+                <button class="option-btn" data-index="1">Пить из них</button>
+                <button class="option-btn" data-index="2">Покупать новые</button>
+                <button class="option-btn" data-index="3">Натирать</button>
+            </div>
+
+            <!-- ФИДБЕК -->
+            <div class="feedback" id="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const greeting = document.getElementById('greeting');
+            const btnReady = document.getElementById('btnReady');
+            const questionText = document.getElementById('questionText');
+            const optionsGrid = document.getElementById('optionsGrid');
+            const optionBtns = document.querySelectorAll('.option-btn');
+            const feedback = document.getElementById('feedback');
+
+            const CORRECT_INDEX = 0; // "Мыть"
+            let answeredCorrect = false;
+
+            function resetOptions() {
+                optionBtns.forEach(btn => {
+                    btn.classList.remove('correct', 'wrong');
+                    btn.disabled = false;
+                });
+            }
+
+            function showFeedback(message, isCorrect) {
+                feedback.innerHTML = message + ' 😉';
+                feedback.className = 'feedback show';
+                feedback.style.borderColor = isCorrect ? 'rgba(46, 125, 50, 0.4)' : 'rgba(198, 40, 40, 0.3)';
+            }
+
+            // ---------- КОНФЕТТИ (взрыв хлопушки) ----------
+            function createConfetti() {
+                const container = document.createElement('div');
+                container.style.position = 'fixed';
+                container.style.top = '0';
+                container.style.left = '0';
+                container.style.width = '100%';
+                container.style.height = '100%';
+                container.style.pointerEvents = 'none';
+                container.style.zIndex = '1000';
+                container.style.overflow = 'hidden';
+                document.body.appendChild(container);
+
+                const colors = ['#f44336', '#e91e63', '#9c27b0', '#3f51b5', '#2196f3', '#009688', '#4caf50', '#ffeb3b', '#ff9800',
+                    '#ff5722', '#8bc34a', '#ff4081'
+                ];
+                const count = 200;
+
+                for (let i = 0; i < count; i++) {
+                    const el = document.createElement('div');
+                    const size = Math.random() * 12 + 6;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const left = Math.random() * 100; // начальная позиция по горизонтали
+                    const delay = Math.random() * 0.6;
+                    const duration = 2.2 + Math.random() * 2; // 2.2-4.2 сек
+                    const rotateEnd = 360 + Math.random() * 720;
+                    // Случайное смещение по X для разлёта (взрыва)
+                    const xOffset = (Math.random() - 0.5) * 500; // от -250px до +250px
+
+                    // Форма: круг или прямоугольник
+                    const shape = Math.random() > 0.5 ? '50%' : '2px';
+
+                    el.style.position = 'absolute';
+                    el.style.top = '-10px';
+                    el.style.left = left + '%';
+                    el.style.width = size + 'px';
+                    el.style.height = size + 'px';
+                    el.style.backgroundColor = color;
+                    el.style.borderRadius = shape;
+                    el.style.opacity = '1';
+                    el.style.boxShadow = '0 0 4px rgba(0,0,0,0.1)';
+
+                    // Анимация через Web Animations API
+                    const keyframes = [
+                        { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+                        { transform: `translate(${xOffset * 0.3}px, 20vh) rotate(${rotateEnd * 0.3}deg)`, opacity: 1,
+                            offset: 0.3 },
+                        { transform: `translate(${xOffset}px, 100vh) rotate(${rotateEnd}deg)`, opacity: 0 }
+                    ];
+
+                    const options = {
+                        duration: duration * 1000,
+                        delay: delay * 1000,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                        fill: 'forwards'
+                    };
+
+                    const anim = el.animate(keyframes, options);
+                    container.appendChild(el);
+                }
+
+                // Удаляем контейнер после завершения всех анимаций
+                setTimeout(() => {
+                    container.remove();
+                }, 6000);
+            }
+
+            // ---------- ОБРАБОТЧИК ОТВЕТОВ ----------
+            function handleOptionClick(e) {
+                if (answeredCorrect) return;
+
+                const btn = e.currentTarget;
+                const index = parseInt(btn.dataset.index, 10);
+
+                // Если уже нажата правильная — ничего не делаем
+                if (btn.classList.contains('correct')) return;
+
+                // Если это правильный ответ
+                if (index === CORRECT_INDEX) {
+                    answeredCorrect = true;
+                    // Блокируем все кнопки
+                    optionBtns.forEach(b => b.disabled = true);
+                    btn.classList.add('correct');
+                    showFeedback(
+                        'Да-да, всё так. Хихик) Следующий Qr-код ищи в гардеробной в спальне',
+                        true
+                    );
+                    // Запускаем конфетти (взрыв хлопушки)
+                    createConfetti();
+                } else {
+                    // Неправильный ответ
+                    btn.classList.add('wrong');
+                    showFeedback(
+                        'Подсказка: даже Ника это подметила, что в нашем доме нельзя бокалы ..., а то ...',
+                        false
+                    );
+                }
+            }
+
+            // ---------- ОБРАБОТЧИК КНОПКИ "Чмока выдана" ----------
+            function handleReadyClick() {
+                greeting.classList.add('hidden');
+                btnReady.classList.add('hidden');
+                questionText.classList.add('show');
+                optionsGrid.classList.add('show');
+
+                answeredCorrect = false;
+                resetOptions();
+                feedback.className = 'feedback';
+                feedback.innerHTML = '';
+                feedback.style.borderColor = '';
+            }
+
+            btnReady.addEventListener('click', handleReadyClick);
+            btnReady.addEventListener('touchstart', function(e) {
+                // пассивный обработчик
+            }, { passive: true });
+
+            optionBtns.forEach(btn => {
+                btn.addEventListener('click', handleOptionClick);
+            });
+
+            feedback.className = 'feedback';
+
+        })();
+    </script>
+
+</body>
+</html>
